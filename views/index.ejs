@@ -33,6 +33,7 @@
         .item img{
             width: 100%;
         }
+        
     </style>
 </head>
 
@@ -64,7 +65,7 @@
         <div class="item">
             <img src="/img/1.jpg">
             <h4><%= albums[i] %></h4>
-            <a href="#">删除</a>
+            <a href="/album/deletealbum/<%= albums[i] %>" onclick="del(this)">删除</a>
         </div>
         <% } %>
     </div>
@@ -72,6 +73,17 @@
 
     <script src='/js/jquery.min.js'></script>
     <script src='/js/bootstrap.js'></script>
+    <script>
+        function del(ele){
+            event.preventDefault();
+            var f = confirm("确定要删除该相册吗?")
+            if(!f){
+                return;
+            }
+            location.href = $(ele).attr("href");
+        }
+        
+    </script>
 </body>
 
 </html>

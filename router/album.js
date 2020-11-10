@@ -26,6 +26,7 @@ router.get("/create",function(req,res){
 });
 
 // 处理post的/album/check请求,检查名称是否存在
+// 如果不存在,则创建文件夹
 router.post("/check",function(req,res){
     // 获取请求参数
     var dirName = req.body.dirName.trim();
@@ -61,6 +62,31 @@ router.post("/check",function(req,res){
 
     });
 })
+
+// 处理get的/album/deletealbum/xxx请求
+// 删除指定名称的文件夹(xxx)
+router.get("/deletealbum/:dirName",function(req,res){
+        // 获取请求参数
+        var dirName = req.params.dirName.trim();
+        if(dirName==""){
+            res.send("删除失败");
+            // false.render("error");
+            return;            
+        }
+
+        // 调用删除文件夹的方法
+        file.remove("./uploads/"+dirName,function(err){
+            if(err){
+                console.log(err);
+                res.send("<h1>删除失败</h1>");
+                return;
+            }
+            // 删除成功,重定向到首页
+            res.redirect("/");
+        })
+        
+        
+});
 
 // 暴露路由
 module.exports=router;
