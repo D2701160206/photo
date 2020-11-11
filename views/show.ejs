@@ -14,12 +14,38 @@
     <script src='/js/html5shiv.min.js'></script>
     <script src='/js/respond.min.js'></script>
     <![endif]-->
-   <style>
-       div.box{
+
+    <style>
+        .items{
+            display: flex;
+            flex-wrap: wrap;
             width: 80%;
-            margin: 100px auto;
-       }
-   </style>
+            margin: 0 auto;
+            justify-content: flex-start;
+            /* background: #ccc; */
+        }
+        .item{
+            width: 150px;
+            height: 200px;
+            text-align: center;
+            margin: 0 5px;
+            position: relative;
+            /* padding: 20px; */
+
+        }
+        .item img{
+            width: 100%;
+        }
+        .items .item>span{
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: none;
+        }
+        .item:hover span{
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -44,57 +70,40 @@
             </div>
         </div>
     </nav>
-
-    <div class="box">
-        <h2>请输入相册的名称</h2>
-        <form class="form-inline" action="/album/create" method="post" onsubmit="return false">
-            <div class="form-group">
-              <label for="dir">相册名</label>
-              <input type="text" class="form-control" name="dirName" id="dir" placeholder="请输入相册的名称">
-            </div>
-            <button type="button" class="btn btn-default">新建</button>
-          </form>
+    <!-- 展示区 -->
+    <div class="items">
+        <% for(var i=0;i<imgs.length;i++){ %>
+        <div class="item">
+            <a href="/<%= dirName %>/<%= imgs[i] %>">
+                <img src="/<%= dirName %>/<%= imgs[i] %>">
+            </a>
+            <span class="glyphicon glyphicon-remove del"></span>
+        </div>
+        <% } %>
     </div>
 
 
     <script src='/js/jquery.min.js'></script>
     <script src='/js/bootstrap.js'></script>
-
     <script>
-
-        
-        // 点击提交发送请求之前的检查
-        $("button.btn").on("click",function(){
-            // 检查服务器中有没有存在输入的文件夹名称
-            // 取值
-            var dirName = $("input[name=dirName]").val().trim();
-            $("input[name=dirName]").val("");
-
-            if(dirName==""){
-                alert("相册名不能为空");
-                return ;
-            }
-            // 发送ajax请求检查服务器是否存在该名称的文件夹
+        $(".del").on("click",function(){
+            var dirName = $(this).prev().attr("href");
+            // console.log(dirName.slice(1,dirName.lastIndexOf("/")));
             $.ajax({
-                url:"/album/check",
-                method:"post",
+                url:"/pic/deletepic",
                 data:{dirName:dirName},
+                method:"post",
                 success:function(res){
-                    if(res.status!="success"){
-                        // alert("相册名不合法,请输入其他名称");
-                        alert(res.msg);
-                        return ;
+                    if(res.status!=0){
+                        alert("删除失败");
+                        return;
                     }
-                    // 创建成功,跳转到首页
-                    location.href="/";
-                },
-            });
+                    location.href="/pic/show?dirName="+dirName.slice(1,dirName.lastIndexOf("/"))
+                }
+            })
         })
-        
-       
-        
-        
     </script>
+   
 </body>
 
 </html>

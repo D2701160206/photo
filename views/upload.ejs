@@ -46,55 +46,34 @@
     </nav>
 
     <div class="box">
-        <h2>请输入相册的名称</h2>
-        <form class="form-inline" action="/album/create" method="post" onsubmit="return false">
-            <div class="form-group">
-              <label for="dir">相册名</label>
-              <input type="text" class="form-control" name="dirName" id="dir" placeholder="请输入相册的名称">
-            </div>
-            <button type="button" class="btn btn-default">新建</button>
-          </form>
+        <% if(status==1){ %>
+            <h1><%= data %></h1>
+        <% }else{ %>
+            <form class="form" action="/pic/upload" method="post" enctype="multipart/form-data">
+                <div class="form-gruop">
+                    <h4>请选择相册:</h4>
+                    <select name="dirName" id="dir" class="form-control">
+                        <% for(var i=0;i<data.length;i++){ %>
+                            <option value="<%= data[i] %>"><%= data[i] %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <h4>请选择上传的文件</h4>
+                    <input type="file" name="pic">
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="上传" class="btn btn-primary">
+                </div>
+               
+            </form>
+        <% } %>
     </div>
 
 
     <script src='/js/jquery.min.js'></script>
     <script src='/js/bootstrap.js'></script>
 
-    <script>
-
-        
-        // 点击提交发送请求之前的检查
-        $("button.btn").on("click",function(){
-            // 检查服务器中有没有存在输入的文件夹名称
-            // 取值
-            var dirName = $("input[name=dirName]").val().trim();
-            $("input[name=dirName]").val("");
-
-            if(dirName==""){
-                alert("相册名不能为空");
-                return ;
-            }
-            // 发送ajax请求检查服务器是否存在该名称的文件夹
-            $.ajax({
-                url:"/album/check",
-                method:"post",
-                data:{dirName:dirName},
-                success:function(res){
-                    if(res.status!="success"){
-                        // alert("相册名不合法,请输入其他名称");
-                        alert(res.msg);
-                        return ;
-                    }
-                    // 创建成功,跳转到首页
-                    location.href="/";
-                },
-            });
-        })
-        
-       
-        
-        
-    </script>
 </body>
 
 </html>
